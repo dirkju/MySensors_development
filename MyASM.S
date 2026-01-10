@@ -36,4 +36,32 @@ doNothing:
 
 #include "hal/crypto/AVR/drivers/SHA256/SHA256.S"
 
+#elif defined(ARDUINO_ARCH_RP2040)
+/*
+ * Weak definitions for setup() and loop()
+ *
+ * Provides default empty implementations that sketches can override.
+ * Necessary because MySensors' custom main() replaces arduino-pico's main(),
+ * which would normally provide these weak symbols.
+ */
+	.syntax unified
+	.cpu cortex-m0plus
+	.thumb
+
+	.section .text.setup,"ax",%progbits
+	.global setup
+	.weak setup
+	.type setup, %function
+setup:
+	bx lr
+	.size setup, .-setup
+
+	.section .text.loop,"ax",%progbits
+	.global loop
+	.weak loop
+	.type loop, %function
+loop:
+	bx lr
+	.size loop, .-loop
+
 #endif
