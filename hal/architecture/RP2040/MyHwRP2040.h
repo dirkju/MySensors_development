@@ -131,16 +131,12 @@ typedef uint8_t unique_id_t[16];
 #define MY_HWRP2040_INTERRUPT_NUM_TO_GPIO(__num) (__num)
 #define MY_HWRP2040_GPIO_TO_INTERRUPT_NUM(__gpio) (__gpio)
 
-// Interrupt modes (Arduino compatible)
-#ifndef CHANGE
-#define CHANGE 1
-#endif
-#ifndef FALLING
-#define FALLING 2
-#endif
-#ifndef RISING
-#define RISING 3
-#endif
+// Interrupt modes: do NOT redefine CHANGE/FALLING/RISING here. The arduino-pico
+// core provides them as values of the strongly-typed `PinStatus` enum (not as
+// preprocessor macros), so `#ifndef RISING` would be true and a `#define RISING 3`
+// would shadow the enum with an int, breaking the typed
+// attachInterrupt(pin_size_t, voidFuncPtr, PinStatus) overload used by the radio
+// drivers (e.g. RFM95). Rely on the core's definitions instead.
 
 // Forward declarations
 bool hwInit(void);

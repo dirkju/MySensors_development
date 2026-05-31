@@ -1233,15 +1233,16 @@ void receive(const MyMessage &message) {
 #define MY_SERIALDEVICE Serial1  // UART0 on GPIO 0/1
 ```
 
-### 8.3 Single Core Usage
+### 8.3 Core Usage
 
-**Issue:** MySensors runs on Core 0 only.
+**Status:** MySensors runs on Core 0.
 
-**Impact:**
-- Core 1 (second ARM core) unused
-- Cannot parallelize radio and application tasks
-
-**Future enhancement:** Could offload radio to Core 1 for lower latency.
+**Resolved 2026-05-31:** the HAL reuses arduino-pico's own `main()` via macro-injection
+(`#define setup _begin` / `#define loop ...` then `#include <main.cpp>`), so the core's
+conditional `multicore_launch_core1()` is preserved. A sketch may define
+`setup1()`/`loop1()` and run application code on Core 1 in parallel with MySensors on
+Core 0 (proven by the Trovis 5575 PIO SPI client). Earlier builds used a standalone
+`main()` that omitted the Core 1 launch.
 
 ### 8.4 EEPROM Wear
 
